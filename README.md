@@ -10,6 +10,6 @@
 4.) Run: source venv/bin/activate
 5.) Run: pip install -r requirements.txt
 6.) Move to venv (cd venv)
-7.) Run: lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py
+7.) Run: python3 lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py
   
 *3 and 4 might be different if you're on windows idk...
