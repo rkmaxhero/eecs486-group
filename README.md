@@ -10,19 +10,24 @@
 2.) Move into repo (cd eecs486-group)
 
 
-3.) Run: python3 -m venv venv
+3.) Run: 
+`python3 -m venv venv`
 
 
-4.) Run: source venv/bin/activate
+4.) Run: 
+`source venv/bin/activate`
 
 
-5.) Run: pip install -r requirements.txt
+5.) Run: 
+`pip install -r requirements.txt`
 
 
-6.) Move to venv (cd venv)
+6.) Move to venv 
+`cd venv`
 
 
-7.) Run: python3 lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py
+7.) Run: 
+`python3 lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py`
 
 8.) If you get the nltk error at the end
 
