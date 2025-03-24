@@ -40,13 +40,26 @@
   7.) exit
   8.) Re-run #7
 
+*3 and 4 might be different if you're on windows idk...
 
+# Nuetralizing Bias 
+## Installation
+Note: you must be in venv before performing the following instructions
 
+enter the /neutralizing-bias directory
+```
+$ pip install -r requirements.txt
+$ sh download_data_ckpt_and_run_inference.sh
+```
 
-
+if you run into an error involving punk_tab
+```
+$ python
+>> import nltk; nltk.download("punkt_tab")
+```
 
 
 
 
   
-*3 and 4 might be different if you're on windows idk...
+
