@@ -1,2 +1,9 @@
 venv/
+bias_data.zip
+bias_data/
+neutralizing-bias/src/model.ckpt
+__MACOSX/
+model.ckpt
+bert.vocab
+TEST/
 
