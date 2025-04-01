@@ -81,7 +81,7 @@ class BilinearAttention(nn.Module):
         attn_scores = self.score_fn(att_keys, att_query)
 
         if mask is not None:
-            attn_scores = attn_scores.masked_fill(mask, -float('inf'))
+            attn_scores = attn_scores.masked_fill(mask.bool(), -float('inf'))
 
         attn_probs = self.softmax(attn_scores)
 
