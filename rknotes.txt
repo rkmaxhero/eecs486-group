@@ -1,0 +1,1 @@
+python3 neutralize_sentence.py --sentence "This terrible article shows the president's dishonest approach to climate policy." --verbose
