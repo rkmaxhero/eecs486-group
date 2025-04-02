@@ -60,6 +60,45 @@ $ python
 ```
 
 
+# TODO:
+- Everyone get the model up and running
+- We want to eventually train our own dataset. But for now, we're just going to use the built in training one...
+
+## We need to:
+
+1.) Create a dataset of articles
+
+2.) Python code to scrape article from url
+
+3.) Python to compile article into array of sentences or other format for processing.
+
+4.) Python code to compute a "bias score"
+
+5.) Python code to "de-bias" article
+
+6.) Python code to run article through Chat to clean up bad grammar.
+
+# Time permitting
+7.) Basic Site to demonstrate
+8.) Additional info like overall leaning of source, reputable source db, etc...
+
+
+Add the # you will be working on below your name
+
+## Lia
+
+## Joe
+
+## Nelly
+
+## Rounaq
+
+## Allison
+
+
+
+
+
 
 
   
