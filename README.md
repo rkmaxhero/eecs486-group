@@ -65,18 +65,22 @@ $ python
 - We want to eventually train our own dataset. But for now, we're just going to use the built in training one...
 
 ## We need to:
+1.) Python code to "de-bias" article
 
-1.) Create a dataset of articles
+2.) Python code to compute a "bias score"
 
-2.) Python code to scrape article from url
+3.) Python code to run output to clean up bad grammar.
 
-3.) Python to compile article into array of sentences or other format for processing.
+4.) Create a dataset of articles
 
-4.) Python code to compute a "bias score"
+5.) Python code to scrape article from url
 
-5.) Python code to "de-bias" article
+6.) Python to compile article into array of sentences or other format for processing.
 
-6.) Python code to run article through Chat to clean up bad grammar.
+
+
+
+
 
 # Time permitting
 7.) Basic Site to demonstrate
