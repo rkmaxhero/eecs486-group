@@ -49,7 +49,7 @@ Note: you must be in venv before performing the following instructions
 enter the ../EECS486-GROUP/neutralizing-bias directory
 ```
 $ pip install -r requirements.txt
-$ cd src
+$ cd neutralizing-bias-master/src
 $ sh download_data_ckpt_and_run_inference.sh
 ```
 
