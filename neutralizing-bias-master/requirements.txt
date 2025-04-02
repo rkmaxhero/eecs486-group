@@ -1,6 +1,6 @@
 pytorch-pretrained-bert==0.3.0
-torch==2.1.1
-torchvision==0.16.1
+torch>=2.1.1
+torchvision>=0.16.1
 tensorboardX
 simplediff
 nltk==3.9.1
