@@ -1,0 +1,136 @@
+After downloading all requirements just run: 
+pip install spacy
+python -m spacy download en_core_web_sm
+
+Run any commands from the /src directory
+The model runs our input files with 
+    runner.sh
+The model requires input formatting with 
+    prepare_sentence.py
+
+All file outputs will be under src/TEST/output.txt
+For multi sentence neutralization add a unique sentence to each line in src/bias_data/WNC/input-multi.txt
+    python3 prepare_sentence.py --file bias_data/WNC/input-multi.txt
+    runner.sh
+For single sentence neurtalization just run the following. The command requires the quotes
+    python3 prepare_sentence.py --sentence "This is my sentence"
+    runner.sh
+
+
+
+
+Some extra notes to recall:
+Models and Their Roles (surprise, they're all specific pieces of BERT)
+•  Tagger Model
+ – Based on a BERT backbone (using Hugging Face’s implementation) that is fine‑tuned for token-level classification.
+ – Its purpose is to detect biased words or phrases in the input text.
+ – It is trained using multitask objectives (for example, predicting bias labels per token) and may incorporate additional expert features from linguistics (POS and dependency tags).
+•  Seq2seq (Debiasing) Model
+ – Also built upon a BERT-based encoder (with optional pointer-generator and coverage mechanisms) that generates a “debiased” version of an input sentence.
+ – The model is designed to rewrite or neutralize biased language by producing a modified, natural‐language output.  – It uses additional loss components (e.g. cross-entropy plus coverage loss) and incorporates special tokens (like a start token and end token markers) to control generation.
+•  Joint Model
+ – Combines the tagging module and the seq2seq debiasing module into one end‑to‑end architecture.
+ – The joint approach leverages the bias detection information from the tagger to guide the debiasing generation step.
+ – Fine-tuning of the joint model may involve freezing certain components (like the BERT encoder) or tuning both modules jointly with a composite loss.
+
+
+
+
+Training and Tuning
+•  Tuning Process
+ – Each model is tuned using standard optimization techniques (e.g., Adam optimizer) with hyperparameters such as learning rate, dropout rate, and hidden size carefully selected (as seen in the training scripts).
+ – The tagger is pre-trained on biased sentence data (with cross-entropy loss on tokens) and its performance is periodically evaluated (e.g. using token accuracy or “true_hits”).
+ – The seq2seq model is trained to generate corrected (debiased) sentences; tuning may involve adjusting the beam width during inference, using pointer-generator networks for copying when needed, and employing additional loss functions like coverage loss to better capture long-range dependencies.  – In the joint training phase, both tagger and debiaser are fine‑tuned together. In some setups, components such as the BERT embeddings might be frozen to retain pre-trained language knowledge while other parts are tuned.
+•  Checkpointing and Early-Stopping
+ – Scripts save model checkpoints after every epoch and evaluation metrics (BLEU, true token hits, etc.) are tracked using TensorBoard.  – The trained models (or intermediate checkpoints) are reloaded either for further fine-tuning (joint model) or inference.
+
+
+
+
+Data Collection and Processing
+•  Data Collection Process
+ – Data is acquired by “harvesting” Wikipedia revisions. A dedicated “harvest/” directory contains utilities for crawling Wikipedia articles and processing revision histories.  – The approach is inspired by prior work (such as Recasens et al.) where biased edits (i.e. biased language) are detected by comparing successive revisions.
+ – Once the raw revision data is collected, a parallel dataset is created where one version expresses bias and the other is neutralized.
+•  Preprocessing
+ – Scripts like prepare_sentence.py are used to tokenize the sentences using both spaCy (for linguistic annotations such as POS and dependency tags) and BERT’s WordPiece tokenizer.
+ – The outputs are formatted into TSV files with fields for ID, tokenized (BERT) representations, raw sentences, POS tags, and dependency tags.  – Unique IDs are generated using a counter so that each sentence in the dataset has a consistent identifier.  – Additional scripts (for instance in deprecated directories) illustrate alternative diff-based approaches, which compute token-level changes between biased and debiased sentences.
+•  Potential Improvements
+ – The diff algorithms could be made more robust (for example, by leveraging Python’s difflib or other sequence alignment techniques) to better capture insertions and deletions.
+ – Data filtering rules might be enhanced to exclude very long sequences or ambiguous cases, and further human validation could be added for quality assurance.
+ – Expanding the domain beyond Wikipedia by incorporating web-scraped articles or crowd-sourced annotations might increase diversity and robustness.
+    
+
+
+
+Useful Details for a Project Report
+•  Architecture Overview:
+ – Describe each module (Tagger, Seq2seq, Joint) and illustrate how they interact.
+ – Explain the rationale behind using pre-trained BERT models to capture linguistic context and the need for multitask objectives in bias detection and neutralization.
+•  Training Strategy:
+ – Outline the multi-stage training procedure (first pre-train the tagger, then the seq2seq debiaser, and finally fine-tune them jointly).
+ – Highlight hyperparameter choices, optimizer settings, and evaluation metrics (BLEU, token-level precision/recall, etc.).
+•  Data Pipeline:
+ – Detail how Wikipedia revisions are crawled, filtered, and aligned to construct the biased–debias sentence pairs.
+ – Explain the use of spaCy for linguistic features and the subsequent tokenization using the BERT WordPiece tokenizer.
+ – Mention any challenges encountered (e.g., aligning tokenizations, handling special tokens) and how they were addressed (e.g., through detokenization).
+•  Implementation and Results:
+ – Summarize how the models were integrated with scripts (runner.sh, inference scripts) and note any debugging steps (adding debug prints, trimming special tokens, etc.).
+ – Include hardware details (e.g., training on TITAN X GPU, training time) and briefly discuss model performance and evaluation outcomes.
+
+
+
+
+
+Extra Useful Details
+•  Architecture Overview:  – The system is composed of three primary modules:   ○ Tagger Module:
+   ▪ Uses a pre-trained BERT model fine-tuned for token-level classification to detect biased words or phrases.
+   ▪ The tagger outputs token-level labels that indicate bias presence, relying on a multitask objective that also incorporates POS and dependency information.   ○ Seq2seq (Debiaser) Module:
+   ▪ Employs a sequence-to-sequence architecture built on a BERT-based encoder.
+   ▪ The decoder generates a neutralized version of the input sentence, using mechanisms such as pointer-generator networks to handle rare words and coverage loss to maintain sentence completeness.   ○ Joint Model:
+   ▪ Integrates the tagger and debiaser into a unified pipeline.
+   ▪ The biased token signals from the tagger guide the seq2seq model in generating debiased text, allowing the system to leverage both token-level bias detection and natural language generation.  – Rationale:
+  Using pre-trained BERT models allows the system to benefit from rich contextual embeddings and linguistic knowledge, while multitask learning enables the model to learn nuanced features necessary for both bias detection and debiasing. This setup addresses the inherently subjective nature of bias and supports more flexible text transformations.
+•  Training Strategy:  – Multi-stage Training Procedure:
+  1. Pre-train the Tagger:
+   – Fine-tune BERT on annotated biased sentences using token-level cross-entropy loss.   2. Train the Seq2seq Debiaser:
+   – Train the sequence-to-sequence model on parallel data consisting of biased and debiased sentence pairs.
+   – Utilize losses such as standard cross-entropy for sequence generation, along with special losses (e.g., pointer-generator loss, coverage loss) to improve handling of rare words and long sequences.   3. Joint Fine-tuning:
+   – Combine the modules and fine-tune them end-to-end with a composite loss that jointly optimizes tagging accuracy and generation quality.  – Hyperparameters & Settings:
+  – Optimizer: Adam (or a variant like BertAdam for parts of the model) with carefully tuned learning rate and gradient clipping.
+  – Hyperparameters include dropout rates (e.g., 0.2), hidden layer sizes (e.g., 768 for BERT), and beam widths during inference.   – Evaluation Metrics: BLEU score for generation quality; token-level precision, recall, and “true-hit” rates for the tagger.
+•  Data Pipeline:  – Data Collection:
+  – Wikipedia revision histories are crawled and processed—biased and neutral versions of sentences are inferred by comparing successive revisions.
+  – The methodology is inspired by previous work in bias detection, where edits that remove or alter biased language are identified.  – Preprocessing:
+  – The raw text is processed using spaCy to extract linguistic features (POS tags and dependency relations).
+  – The text is then tokenized using BERT’s WordPiece tokenizer.
+  – A custom script (prepare_sentence.py) aligns these tokenizations and generates a TSV file including a unique ID, tokenized text, raw sentence, POS tags, and dependency tags.  – Challenges and Resolutions:
+  – Alignment Issues: Natural differences between spaCy and BERT tokenizations required careful alignment and sometimes manual adjustments using diff algorithms.
+  – Special Tokens: Extra tokens (start, end, [PAD]) were handled by trimming functions and later detokenized using a helper (detokenize_wordpieces) to ensure human readability.   – Potential Improvements:
+   – Incorporating more robust sequence alignment methods or quality checks might reduce noise in the parallel dataset.
+•  Implementation and Results:  – System Integration:
+  – Models are integrated via runner.sh and inference scripts.
+  – Debugging was facilitated by inserting print statements throughout the pipeline (e.g., in run_eval and dump_outputs) to verify token alignment, diff outputs, and detokenization.  – Hardware and Training Details:
+  – Training was performed on GPUs (e.g., TITAN X) with runtime and memory considerations noted during experimentation.
+  – Checkpoints were saved after each epoch for both the tagger and seq2seq modules.  – Evaluation Outcomes:
+  – Generation is evaluated both with BLEU scores and by manual inspection of debiased output.
+  – Token-level metrics on biased detection were collected to gauge the tagging efficacy.   – Early results indicate effective debiasing, though further tuning is required for rare words and edge-case biases.
+•  Future Work:  – Model Architecture:
+  – Experiment with alternative sequence-to-sequence formulations (e.g., Transformer-based decoders) or more sophisticated attention mechanisms.   – Explore dynamic fusion methods for better integrating tagger signals into the seq2seq generation process.  – Data Collection Enhancements:
+  – Automate quality assessment of collected data using semi-supervised or active learning techniques to filter lower-quality revision pairs.   – Expand the dataset by incorporating non-Wikipedia sources or crowd-sourced bias annotations to improve domain diversity.  – Evaluation Improvements:
+  – Incorporate more granular evaluation metrics and user studies to comprehensively assess debiasing quality and real-world impact.
+
+
+
+
+I noticed the project uses some evalutaion metrics but i didn't look into them. This what AI says they are tho. There's prolly a more correct documentation in the guy's report.
+• Generation Quality (Seq2Seq/Joint Models):
+ – After decoding, the generated output is compared to the reference (gold) text using BLEU scores. This measures how fluent and similar the debiased output is to the expected neutral sentence.
+ – Log perplexity (or cross‑entropy loss with teacher forcing) is also computed as a secondary measure of how well the model predicts the target sequence.
+• Token-Level Evaluation (Tagger Component):
+ – Metrics such as token accuracy (or “labeling hits”) are reported to assess how accurately the model identifies biased tokens in the input.
+ – Precision and recall are computed over token-level predictions to capture fine-grained performance.
+• Additional Metrics (Baselines):
+ – Edit distance between generated and target sentences is measured to quantify the amount of change.
+ – In some setups, a separately trained text classifier is used to compute a “classifier error” rate over the debiased outputs, providing an extrinsic check on quality in terms of bias detection.
+• Evaluation Process Integration:
+ – The evaluation is integrated into training via scripts like joint_utils.run_eval and baselines/evaluation.py, with results logged over epochs (e.g., using TensorBoard scalars for BLEU, token losses, and true-hit rates).
