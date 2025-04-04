@@ -12,7 +12,19 @@ import sys; sys.path.append('.')
 from shared.args import ARGS
 from shared.constants import CUDA
 
-
+def detokenize_wordpieces(tokens):
+    """
+    Merge BERT wordpiece tokens into a human‑readable string.
+    e.g. ['the', 'ho', '##rre', '##ndo', '##us', 'rest', '##ura', '##unt', 'serves', 'salad', '.']
+    becomes "the horrendous restaurant serves salad."
+    """
+    words = []
+    for token in tokens:
+        if token.startswith("##") and words:
+            words[-1] += token[2:]
+        else:
+            words.append(token)
+    return " ".join(words)
 
 #############################################################
 def bleu_stats(hypothesis, reference):
@@ -73,7 +85,7 @@ def build_loss_fn(vocab_size):
 
 
     def weighted_cross_entropy_loss(log_probs, labels, apply_mask=None):
-        # weight apply_mask = wehere to apply weight
+        # weight apply_mask = where to apply weight
         weights = apply_mask.contiguous().view(-1)
         weights = ((ARGS.debias_weight - 1) * weights) + 1.0
 
@@ -169,7 +181,7 @@ def train_for_epoch(model, dataloader, tok2id, optimizer, loss_fn, ignore_enrich
 
 
 def dump_outputs(src_ids, gold_ids, predicted_ids, gold_tok_dist, id2tok, out_file,
-        pred_dists=None):
+                 pred_dists=None):
     out_hits = []
     preds_for_bleu = []
     golds_for_bleu = []
@@ -180,41 +192,42 @@ def dump_outputs(src_ids, gold_ids, predicted_ids, gold_tok_dist, id2tok, out_fi
     for src_seq, gold_seq, pred_seq, gold_dist, pred_dist in zip(
         src_ids, gold_ids, predicted_ids, gold_tok_dist, pred_dists):
 
-        src_seq = [id2tok[x] for x in src_seq]
-        gold_seq = [id2tok[x] for x in gold_seq]
-        pred_seq = [id2tok[x] for x in pred_seq[1:]]   # ignore start token
-        if '止' in gold_seq:
-            gold_seq = gold_seq[:gold_seq.index('止')]
-        if '止' in pred_seq:
-            pred_seq = pred_seq[:pred_seq.index('止')]
+        # Convert token ids to tokens
+        raw_src = [id2tok[x] for x in src_seq]
+        raw_gold = [id2tok[x] for x in gold_seq]
+        raw_pred = [id2tok[x] for x in pred_seq[1:]]  # ignore start token
 
-        gold_replace = [chunk for tag, chunk in diff(src_seq, gold_seq) if tag == '+']
-        pred_replace = [chunk for tag, chunk in diff(src_seq, pred_seq) if tag == '+']
+        if '止' in raw_gold:
+            raw_gold = raw_gold[:raw_gold.index('止')]
+        if '止' in raw_pred:
+            raw_pred = raw_pred[:raw_pred.index('止')]
 
-        src_seq = ' '.join(src_seq).replace('[PAD]', '').strip()
-        gold_seq = ' '.join(gold_seq).replace('[PAD]', '').strip()
-        pred_seq = ' '.join(pred_seq).replace('[PAD]', '').strip()
+        # Compute token-level differences using diff
+        gold_replace = [chunk for tag, chunk in diff(raw_src, raw_gold) if tag == '+']
+        pred_replace = [chunk for tag, chunk in diff(raw_src, raw_pred) if tag == '+']
 
-        # try:
+        # Detokenize the sequences using the helper function
+        src_seq_str = detokenize_wordpieces(raw_src).replace('[PAD]', '').strip()
+        gold_seq_str = detokenize_wordpieces(raw_gold).replace('[PAD]', '').strip()
+        pred_seq_str = detokenize_wordpieces(raw_pred).replace('[PAD]', '').strip()
+
         print('#' * 80, file=out_file)
-        print('IN SEQ: \t', src_seq.encode('utf-8'), file=out_file)
-        print('GOLD SEQ: \t', gold_seq.encode('utf-8'), file=out_file)
-        print('PRED SEQ:\t', pred_seq.encode('utf-8'), file=out_file)
-        print('GOLD DIST: \t', list(gold_dist), file=out_file)
-        print('PRED DIST: \t', list(pred_dist), file=out_file)
-        print('GOLD TOK: \t', list(gold_replace), file=out_file)
-        print('PRED TOK: \t', list(pred_replace), file=out_file)
-        # except UnicodeEncodeError:
-        #     pass
+        print('IN SEQ:\t', src_seq_str.encode('utf-8'), file=out_file)
+        print('GOLD SEQ:\t', gold_seq_str.encode('utf-8'), file=out_file)
+        print('PRED SEQ:\t', pred_seq_str.encode('utf-8'), file=out_file)
+        print('GOLD DIST:\t', list(gold_dist), file=out_file)
+        print('PRED DIST:\t', list(pred_dist), file=out_file)
+        print('GOLD TOK:\t', list(gold_replace), file=out_file)
+        print('PRED TOK:\t', list(pred_replace), file=out_file)
 
-        if gold_seq == pred_seq:
+        if gold_seq_str == pred_seq_str:
             out_hits.append(1)
         else:
             out_hits.append(0)
 
-        preds_for_bleu.append(pred_seq.split())
-        golds_for_bleu.append(gold_seq.split())
-        srcs_for_bleu.append(src_seq.split())
+        preds_for_bleu.append(pred_seq_str.split())
+        golds_for_bleu.append(gold_seq_str.split())
+        srcs_for_bleu.append(src_seq_str.split())
 
     return out_hits, preds_for_bleu, golds_for_bleu, srcs_for_bleu
 
