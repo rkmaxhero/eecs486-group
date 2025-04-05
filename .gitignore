@@ -7,3 +7,4 @@ model.ckpt
 bert.vocab
 TEST/
 neutralizing-bias-master/src/temp/
+neutralizing-bias-master/src/training_outpu/
