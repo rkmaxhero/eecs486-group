@@ -32,7 +32,7 @@ def main(directory="parsed_articles"):
         # Step 3: Run inference
         print("Running inference...")
         result = runInterface(filename, tsv_temp_path)
-
+        
         # Step 4: Print output
         print("Computing bias...")
         computeBias(result)

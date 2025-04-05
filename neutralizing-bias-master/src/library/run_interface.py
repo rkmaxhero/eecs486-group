@@ -1,14 +1,13 @@
-# Returns dict with the following format:
-# {
-#     "id_num": "00000001",
+# Returns dict with original and predicted sequences, and their distributions
 
 import os
 import subprocess
 import ast
 import logging
-logging.getLogger().setLevel(logging.ERROR)  # Suppress warnings
+logging.getLogger().setLevel(logging.ERROR)
 
-def runInterface(filename, tsv_temp_path):
+
+def runInterface(filename: str, tsv_temp_path: str) -> dict:
     print(f"\nRunning inference for {filename}...")
     output_path = f"training_output/{filename}"
     cmd = [
@@ -54,6 +53,5 @@ def runInterface(filename, tsv_temp_path):
                 result["gold_tok"] = ast.literal_eval(line.split("GOLD TOK:")[1].strip())
             elif line.startswith("PRED TOK:"):
                 result["pred_tok"] = ast.literal_eval(line.split("PRED TOK:")[1].strip())
-
     return result
         
