@@ -1,0 +1,5 @@
+Original File,Modified File,Metric,Precision,Recall,F1
+test1.txt,test1out.txt,rouge1,1.0000,0.8333,0.9091
+test1.txt,test1out.txt,rougeL,1.0000,0.8333,0.9091
+test2.txt,test2out.txt,rouge1,0.9217,0.3497,0.5070
+test2.txt,test2out.txt,rougeL,0.8341,0.3164,0.4588

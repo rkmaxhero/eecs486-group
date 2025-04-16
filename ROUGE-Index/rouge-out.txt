@@ -1,0 +1,10 @@
+Processing pair: 'test1.txt' vs 'test1out.txt'
+ROUGE Scores:
+  rouge1: Precision = 1.0000, Recall = 0.8333, F1 = 0.9091
+  rougeL: Precision = 1.0000, Recall = 0.8333, F1 = 0.9091
+--------------------------------------------------
+Processing pair: 'test2.txt' vs 'test2out.txt'
+ROUGE Scores:
+  rouge1: Precision = 0.9217, Recall = 0.3497, F1 = 0.5070
+  rougeL: Precision = 0.8341, Recall = 0.3164, F1 = 0.4588
+--------------------------------------------------
