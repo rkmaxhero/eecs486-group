@@ -1,0 +1,21 @@
+cnn1
+1.25
+    eval/bleu 93.65 0
+    eval/true_hits 0.276 0
+    rouge1: P=0.997 R=0.969  F1=0.982
+    rougeL: P=0.997  R=0.969  F1=0.982
+1.5
+    eval/bleu 92.90 0
+    eval/true_hits 0.262 0
+    rouge1: P=0.98  R=0.960  F1=0.972
+    rougeL: P=0.974  R=0.959  F1=0.966
+1.75
+    eval/bleu 88.00 0
+    eval/true_hits 0.201 0
+    rouge1: P=0.962  R=0.910  F1=0.934
+    rougeL: P=0.940  R=0.905  F1=0.920
+2.0
+    eval/bleu 80.11 0
+    eval/true_hits 0.168 0
+    rouge1: P=0.912  R=0.817  F1=0.857
+    rougeL: P=0.904  R=0.798  F1=0.844

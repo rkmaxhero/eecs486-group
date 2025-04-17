@@ -25,7 +25,7 @@ def main(directory="parsed_articles"):
 
         # Write TSV to temp file for inference
         print("Writing TSV to temp file...")
-        tsv_temp_path = "temp/temp.test"
+        tsv_temp_path = "temp/trash.test"
         with open(tsv_temp_path, "w") as test_file:
             test_file.write(tsv_data)
 
