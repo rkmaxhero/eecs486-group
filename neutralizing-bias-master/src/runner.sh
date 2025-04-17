@@ -3,7 +3,7 @@
 [ -f "TEST/test_data.pkl" ] && rm "TEST/test_data.pkl"
 python joint/inference.py \
        --extra_features_top --pre_enrich --activation_hidden \
-       --test_batch_size 1 --bert_full_embeddings --debias_weight 1.75 --token_softmax \
+       --test_batch_size 1 --bert_full_embeddings --debias_weight 2 --token_softmax \
        --pointer_generator --coverage \
        --working_dir TEST \
        --test bias_data/WNC/input-single.test \
