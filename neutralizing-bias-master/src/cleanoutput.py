@@ -1,57 +1,63 @@
 #!/usr/bin/env python3
-import re
-import sys
+
 import os
+import sys
+import re
+import argparse
+
+SEP = "#" * 80
 
 def extract_pred_seqs(path):
-    """
-    Reads the file at `path`, splits on lines of ####…,
-    and for each block finds the 'PRED SEQ:' line,
-    strips off the leading marker and trailing quote,
-    and yields the raw prediction string.
-    """
+    """Yield each predicted sequence (without the b'…' wrapper) from the given file."""
     with open(path, 'r', encoding='utf-8') as f:
         data = f.read()
-
-    # Split on any line consisting solely of '#' characters
     blocks = re.split(r'(?m)^[#]+\s*$', data)
-
     for blk in blocks:
         for line in blk.splitlines():
             if line.startswith("PRED SEQ:"):
+                # try full capture
                 m = re.match(r"PRED SEQ:\s*b'(.*)'", line)
                 if m:
                     yield m.group(1)
                 else:
-                    part = line.split("b'", 1)
-                    if len(part) > 1:
-                        yield part[1].rstrip("'")
+                    # fallback split
+                    parts = line.split("b'", 1)
+                    if len(parts) == 2:
+                        yield parts[1].rstrip("'")
                 break
 
 def main():
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <input_file> <output_dir>", file=sys.stderr)
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Batch‐clean all TEST/*.txt into parsed_articles_neutralized/"
+    )
+    parser.add_argument(
+        "-i","--input-dir",
+        default=os.path.join(os.path.dirname(__file__), "TEST"),
+        help="Directory containing .txt output files"
+    )
+    parser.add_argument(
+        "-o","--output-dir",
+        default=os.path.join(os.path.dirname(__file__), "parsed_articles_neutralized"),
+        help="Where to write cleaned prediction files"
+    )
+    args = parser.parse_args()
 
-    input_path  = sys.argv[1]
-    output_dir  = sys.argv[2]
+    os.makedirs(args.output_dir, exist_ok=True)
 
-    # Ensure output directory exists
-    os.makedirs(output_dir, exist_ok=True)
+    for fname in sorted(os.listdir(args.input_dir)):
+        if not fname.lower().endswith(".txt"):
+            continue
+        inp = os.path.join(args.input_dir, fname)
+        base, _ = os.path.splitext(fname)
+        out = os.path.join(args.output_dir, f"{base}.out")
 
-    # Derive the output filename: same basename, but with .out extension
-    base        = os.path.splitext(os.path.basename(input_path))[0]
-    output_name = f"{base}.out"
-    output_path = os.path.join(output_dir, output_name)
+        count = 0
+        with open(out, 'w', encoding='utf-8') as outf:
+            for pred in extract_pred_seqs(inp):
+                outf.write(pred + "\n")
+                count += 1
 
-    # Extract and write predictions
-    count = 0
-    with open(output_path, 'w', encoding='utf-8') as out:
-        for pred in extract_pred_seqs(input_path):
-            out.write(pred + "\n")
-            count += 1
-
-    print(f"Wrote {count} predictions to {output_path}")
+        print(f"[{count:2d}] → {fname}  cleaned → {os.path.basename(out)}")
 
 if __name__ == "__main__":
     main()
