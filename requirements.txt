@@ -23,3 +23,5 @@ python-Levenshtein
 autocorrect
 future
 NumPy==1.26.4
+
+language-tool-python
