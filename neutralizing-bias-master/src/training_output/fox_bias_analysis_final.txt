@@ -1,0 +1,11 @@
+filename	pos	neg	neu	pscore	nscore	neuscore	finalscore
+fox1.out	2	7	3	0.167	0.587	0.25	negative
+fox10.out	2	7	3	0.167	0.587	0.25	negative
+fox2.out	2	7	3	0.167	0.587	0.25	negative
+fox3.out	2	7	3	0.167	0.587	0.25	negative
+fox4.out	2	7	3	0.167	0.587	0.25	negative
+fox5.out	2	7	3	0.167	0.587	0.25	negative
+fox6.out	2	7	3	0.167	0.587	0.25	negative
+fox7.out	2	7	3	0.167	0.587	0.25	negative
+fox8.out	2	7	3	0.167	0.587	0.25	negative
+fox9.out	2	7	3	0.167	0.587	0.25	negative

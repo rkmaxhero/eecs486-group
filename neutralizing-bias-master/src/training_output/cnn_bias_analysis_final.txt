@@ -1,0 +1,11 @@
+filename	pos	neg	neu	pscore	nscore	neuscore	finalscore
+cnn1.out	2	7	3	0.167	0.587	0.25	negative
+cnn10.out	2	7	3	0.167	0.587	0.25	negative
+cnn2.out	2	7	3	0.167	0.587	0.25	negative
+cnn3.out	2	7	3	0.167	0.587	0.25	negative
+cnn4.out	2	7	3	0.167	0.587	0.25	negative
+cnn5.out	2	7	3	0.167	0.587	0.25	negative
+cnn6.out	2	7	3	0.167	0.587	0.25	negative
+cnn7.out	2	7	3	0.167	0.587	0.25	negative
+cnn8.out	2	7	3	0.167	0.587	0.25	negative
+cnn9.out	2	7	3	0.167	0.587	0.25	negative

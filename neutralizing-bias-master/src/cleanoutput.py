@@ -28,7 +28,7 @@ def extract_pred_seqs(path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Batch‐clean all TEST/*.txt into parsed_articles_neutralized/"
+        description="Batch-clean all TEST/*.txt into parsed_articles_neutralized/"
     )
     parser.add_argument(
         "-i","--input-dir",

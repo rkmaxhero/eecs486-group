@@ -1,0 +1,11 @@
+filename	pos	neg	neu	pscore	nscore	neuscore	finalscore
+cnn1.txt	11	10	8	0.379	0.348	0.276	neutral
+cnn10.txt	1	9	2	0.083	0.754	0.167	negative
+cnn2.txt	12	33	24	0.174	0.486	0.348	negative
+cnn3.txt	23	23	16	0.371	0.38	0.258	neutral
+cnn4.txt	14	3	6	0.609	0.131	0.261	positive
+cnn5.txt	12	10	3	0.48	0.413	0.12	positive
+cnn6.txt	10	15	6	0.323	0.49	0.194	negative
+cnn7.txt	5	10	5	0.25	0.504	0.25	negative
+cnn8.txt	17	47	26	0.189	0.537	0.289	negative
+cnn9.txt	9	26	9	0.205	0.594	0.205	negative

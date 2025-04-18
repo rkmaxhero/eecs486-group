@@ -1,0 +1,22 @@
+Top 20 words for source 'fox':
+
+el: 70, connotation: neutral
+salvador: 70, connotation: neutral
+trump: 60, connotation: neutral
+administration: 50, connotation: neutral
+prison: 30, connotation: negative
+president: 30, connotation: neutral
+alien: 30, connotation: neutral
+enemies: 30, connotation: negative
+act: 30, connotation: neutral
+send: 20, connotation: neutral
+migrants: 20, connotation: neutral
+supreme: 20, connotation: positive
+court: 20, connotation: neutral
+deportations: 20, connotation: neutral
+according: 20, connotation: neutral
+officials: 20, connotation: neutral
+america: 20, connotation: neutral
+visit: 20, connotation: neutral
+country: 20, connotation: neutral
+security: 20, connotation: positive

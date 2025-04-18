@@ -1,1 +1,1 @@
-eval/bleu 96eval/true_hits 0
+eval/bleu 94eval/true_hits 0
