@@ -20,6 +20,7 @@
 
 5.) Run: 
 `pip install -r requirements.txt`
+`python3 -m spacy download en_core_web_sm`
 
 
 6.) Move to venv 
@@ -59,52 +60,10 @@ $ python
 >> import nltk; nltk.download("punkt_tab")
 ```
 
+if you have a specific file you want to run bias on, modify runner.sh to utilize your file path in the --test flag
 
-# TODO:
-- Everyone get the model up and running
-- We want to eventually train our own dataset. But for now, we're just going to use the built in training one...
+from the src directory
+`python3 prepare_sentence.py --file path/to/filename.txt --output path/to/outputdirectory`
+`sh runner.sh`
 
-## We need to:
-1.) Python code to "de-bias" article
-
-2.) Python code to compute a "bias score"
-
-3.) Python code to run output to clean up bad grammar.
-
-4.) Create a dataset of articles
-
-5.) Python code to scrape article from url
-
-6.) Python to compile article into array of sentences or other format for processing.
-
-
-
-
-
-
-# Time permitting
-7.) Basic Site to demonstrate
-8.) Additional info like overall leaning of source, reputable source db, etc...
-
-
-Add the # you will be working on below your name
-
-## Lia
-
-## Joe
-2
-
-## Nelly
-
-## Rounaq
-
-## Allison
-
-
-
-
-
-
-
-  
 

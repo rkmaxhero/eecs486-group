@@ -18,15 +18,7 @@ rougeL measures how much of the flow/structure of the text is the same.
 """
 
 def read_file_content(filename):
-    """
-    Reads the content of a file.
-    
-    Args:
-        filename (str): The path to the file.
-        
-    Returns:
-        str: The content of the file. Returns an empty string if the file is not found.
-    """
+
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             return file.read()
@@ -35,16 +27,7 @@ def read_file_content(filename):
         return ""
 
 def compute_rouge_scores(original_text, modified_text):
-    """
-    Computes ROUGE scores between two text strings.
-    
-    Args:
-        original_text (str): Text from the original file.
-        modified_text (str): Text from the modified file.
-        
-    Returns:
-        dict: A dictionary with ROUGE score objects for each metric.
-    """
+
     # Create a ROUGE scorer that will compute ROUGE-1 and ROUGE-L.
     scorer = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
     scores = scorer.score(original_text, modified_text)
