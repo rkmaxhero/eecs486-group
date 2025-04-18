@@ -1,83 +1,146 @@
-# eecs486-group
-## sentinment analysis (https://github.com/cjhutto/vaderSentiment.git)
-## neutralizing bias (https://github.com/rpryzant/neutralizing-bias.git)
-## language tool (https://pypi.org/project/language-tool-python/)
-
-# VENV INSTALL
-1.) Clone repo
+# EECS 486, Team 27
+## Using LLMs to Identify and Neutralize Biased Information in News Media
 
 
-2.) Move into repo (cd eecs486-group)
+# Overview
+### This project aims to address the pervasive issue of biased reporting in news media. Biased language not only distorts public perception but also deepens political and social polarization. By developing a system that identifies and neutralizes biased language, we seek to empower readers with more balanced and objective information, ultimately fostering critical thinking and reducing polarization. Our approach combines sentiment analysis, source verification, and Large Language Model (LLM)-based text rewriting to detect and neutralize biased language. This work contributes to the ongoing effort to mitigate the spread of misinformation and encourage more constructive dialogue by providing a neutral perspective on news coverage.
 
 
-3.) Run: 
-`python3 -m venv venv`
+# Installation
+#### IMPORTANT NOTE: The installation/training of the model below takes anywhere from 2-5 hours. 
 
+#### For demonstration/testing purposes, please refer to [this section.](#for-demo-purposes)
 
-4.) Run: 
-`source venv/bin/activate`
+#### This setup assumes a Linx platform.
 
-
-5.) Run: 
-`pip install -r requirements.txt`
-`python3 -m spacy download en_core_web_sm`
-`sudo apt install openjdk-17-jre`
-
-
-6.) Move to venv 
-`cd venv`
-
-
-7.) Run: 
-`python3 lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py`
-
-8.) If you get the nltk error at the end
-
-  1.) Run: python3
-  2.) Run: import(nltk)
-  3.) Run: nltk.download()
-  4.) Select d
-  5.) Type in "all"
-  6.) q to exit once downloaded
-  7.) exit
-  8.) Re-run #7
-
-*3 and 4 might be different if you're on windows idk...
-
-# Neutralizing Bias 
-## Installation
-Note: you must be in venv before performing the following instructions
-
-enter the ../EECS486-GROUP/neutralizing-bias directory
+## Step 0: Clone the repository.
+```bash
+git clone https://github.com/rkmaxhero/eecs486-group.git
 ```
-$ pip install -r requirements.txt
-$ cd neutralizing-bias-master/src
-$ sh download_data_ckpt_and_run_inference.sh
+## Step 1: Venv Setup
+
+1. **Move to root directory**  
+```bash
+cd eecs486-group
+```
+2. **Create venv**
+```bash
+python3 -m venv venv
+```
+3. **Activate venv**
+```bash
+source venv/bin/activate
+```
+4. **Install requirements**
+```bash
+pip install -r requirements.txt
+```
+5. **Download spacy core**
+```bash
+python3 -m spacy download en_core_web_sm
+```
+6. **Move to venv**
+```bash
+cd venv
+```
+7. **Prepare VADER**
+```bash
+python3 lib/python3.13/site-packages/vaderSentiment/vaderSentiment.py
 ```
 
-if you run into an error involving punk_tab
+#### If you have issues with this, it is likely with nltk package. Try
+```bash
+python3
+# in python3 terminal
+import(nltk)
+nltk.download()
+# when prompted, select option d, and type in "all"
+exit
+
+Rerun step 7.
 ```
-$ python
->> import nltk; nltk.download("punkt_tab")
+
+## Step 2: Neutralizer Setup
+0. **You should still be in the venv...**
+1. **Move to root directory**  
+```bash
+cd eecs486-group/neutralizing-bias-master
+```
+3. **Install requirements**
+```bash
+pip install -r requirements.txt
+```
+4. **Move to src**
+```bash
+cd src
+```
+5. **Download model + dataset (this takes forever....)**
+```bash
+sh download_data_ckpt_and_run_interface.sh
+```
+#### If you have issues with this, it is likely with punk_tab package. Try
+```bash
+python3
+# in python3 terminal
+import(nltk)
+nltk.download("punkt_tab")
+exit
 ```
 
-if you have a specific file you want to run bias on, modify runner.sh to utilize your file path in the --test flag
+# Running the model
+## For Development
+1. **Add documents to src/parsed_articles folder**  
+	Note: These files must match the format: 1 sentence per line
+2. **Move to src directory and run:**  
+	Note: This can also take some time depending on the size of your corpus.
+```bash
+sh train_complete.sh {parsed_articles_directory}
+```
+3. **Clean output from VADER**
+```bash
+python3 cleanoutput.py
+```
+4. **Create score files**
+```bash
+python3 library/score.py
+```
+5. **Create score files**
+```bash
+python3 scoreFinal.py
+```
 
-from the src directory
-`python3 prepare_sentence.py --file path/to/filename.txt --output path/to/outputdirectory`
-`sh runner.sh`
+## For Demo Purposes
+1. **Create score files**
+```bash
+python3 library/score.py
+```
+2. **Create score files**
+```bash
+python3 scoreFinal.py
+```
+Final scores will be saved to training_ouput/{source}_final_bias.txt
 
+## Additional Tools
+Vader often creates some grammatical errors. If you would like to run your output files through a cleaner before computing the bias score you can do the following:
+1. **Install openjdk if not on your system already (needed for packages)**
+```bash
+sudo apt install openjdk-17-jre
+```
+2. **Move to /cleaning and created in and out directories**
+```bash
+cd cleaning
+mkdir in
+mkdir out
+```
+3. **To clean all files**
+```bash
+python3 batchclean.py
+```
+3. **To clean specific file**
+```bash
+python3 singleclean.py
+```
 
-# Cleaning Neutralized Files
-
-If neutralized output files have incorrect grammar, you can run a script to clean them up.
-
-The singleclean.py and batchclean.py scripts use the Python Language Tool to fix grammar mistakes. Java is required for the library to work and should have been installed during the venv process. (`sudo apt install openjdk-17-jre`). 
-
-(Be warned that this still does not fix all issues)
-
-Place the articles you want cleaned in a directory named "in", making sure their extension is all '.out'.
-
-Create a folder named "out". Make sure the singleclean.py and batchclean.py are at the same place as these two folders. Run batchclean.py to clean all the articles at once, and the clean versions will be located in the "out" directory.
-
-You can also run singleclean.py on any one article, provided you specify a filename located in the "in" foldder. 
+# References
+## Sentinment analysis (https://github.com/cjhutto/vaderSentiment.git)
+## Neutralizing bias (https://github.com/rpryzant/neutralizing-bias.git)
