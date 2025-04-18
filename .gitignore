@@ -5,6 +5,7 @@ neutralizing-bias/src/model.ckpt
 __MACOSX/
 model.ckpt
 bert.vocab
-TEST/
+cache/
 neutralizing-bias-master/src/temp/
 neutralizing-bias-master/src/training_outpu/
+*.pkl
