@@ -6,6 +6,6 @@ python joint/inference.py \
        --test_batch_size 1 --bert_full_embeddings --debias_weight 2 --token_softmax \
        --pointer_generator --coverage \
        --working_dir TEST \
-       --test bias_data/articles/fox12.test \
+       --test bias_data/articles/cnn17.test \
        --checkpoint model.ckpt \
-       --inference_output TEST/fox12.txt
+       --inference_output TEST/cnn17.txt
